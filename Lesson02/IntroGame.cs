@@ -39,7 +39,6 @@ public class IntroGame : Game
         _pixel = new Texture2D(GraphicsDevice, 1, 1);
         _pixel.SetData(new []{Color.White});
     
-        
     }
 
     protected override void Update(GameTime gameTime)
