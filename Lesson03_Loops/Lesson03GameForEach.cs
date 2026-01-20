@@ -65,7 +65,7 @@ public class Lesson03GameForEach : Game
 
         foreach(Rectangle r in _rectangles)
         {
-            _spriteBatch.Draw(_pixel, r, Color.White);
+           _spriteBatch.Draw(_pixel, r, Color.White);
         }
 
 
@@ -76,3 +76,4 @@ public class Lesson03GameForEach : Game
         base.Draw(gameTime);
     }
 }
+ 
