@@ -81,8 +81,6 @@ public class Pong : Game
 
         _ball.Update(gameTime);
 
-        
-
         KeyboardState kbState = Keyboard.GetState();
         #region right paddle
         if(kbState.IsKeyDown(Keys.Up))
