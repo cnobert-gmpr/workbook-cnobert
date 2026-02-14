@@ -6,12 +6,21 @@ namespace Lesson07Pong;
 
 public class Ball
 {
+    private const float _CollisionTimerInterval = 0.4f;
+
     private Rectangle _playAreaBoundingBox;
 
     private Texture2D _texture;
     private Vector2 _position, _direction, _dimensions;
-    private float _speed;
+    private float _speed, _collisionTimer;
 
+    internal Rectangle BoundingBox
+    {
+        get
+        {
+            return new Rectangle(_position.ToPoint(), _dimensions.ToPoint());
+        }
+    }
     // _ball.Initialize(new Vector2(150, 195), 60, new Vector2(21, 21), new Vector2(-1, -1));
     internal void Initialize
         (Vector2 position, float speed, Vector2 dimensions, Vector2 direction, Rectangle playAreaBoundingBox)
@@ -31,6 +40,7 @@ public class Ball
     internal void Update(GameTime gameTime)
     {
         float dt = (float) gameTime.ElapsedGameTime.TotalSeconds;
+        _collisionTimer += dt;
         _position += _direction * _speed * dt;
 
         //bounce the ball off left and right sides
@@ -48,10 +58,27 @@ public class Ball
     }
 
     internal void Draw(SpriteBatch spriteBatch)
+    {        
+        spriteBatch.Draw(_texture, BoundingBox, Color.White);
+    }
+
+    internal void ProcessCollision(Rectangle otherBoundingBox)
     {
-        Rectangle ballRectangle = 
-            new Rectangle((int) _position.X, (int) _position.Y, (int) _dimensions.X, (int) _dimensions.Y);
-        
-        spriteBatch.Draw(_texture, ballRectangle, Color.White);
+        if(_collisionTimer >= _CollisionTimerInterval && BoundingBox.Intersects(otherBoundingBox))
+        {
+            //collision!
+            _collisionTimer = 0;
+            Rectangle intersection = Rectangle.Intersect(BoundingBox, otherBoundingBox);
+            if(intersection.Width > intersection.Height)
+            {
+                //horizontal rectangle, therefore top or bottom collision
+                _direction.Y *= -1;
+            }
+            else
+            {
+                //vertical rectangle, therefore side collision
+                _direction.X *= -1;
+            }
+        }
     }
 }

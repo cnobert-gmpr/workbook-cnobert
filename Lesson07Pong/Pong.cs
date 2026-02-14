@@ -42,7 +42,7 @@ public class Pong : Game
         _graphics.ApplyChanges();
 
         _ball = new Ball();
-        _ball.Initialize(new Vector2(150, 195), 60, new Vector2(21, 21), new Vector2(-1, -1), PlayAreaBoundingBox);
+        _ball.Initialize(new Vector2(150, 195), 600, new Vector2(21, 21), new Vector2(-1, -1), PlayAreaBoundingBox);
 
         _paddleRight = new Paddle();
         _paddleRight.Initialize(new Vector2(690, 198), 240, new Vector2(8, 124), PlayAreaBoundingBox);
@@ -87,6 +87,9 @@ public class Pong : Game
         _ball.Update(gameTime);
         _paddleRight.Update(gameTime);
         _paddleLeft.Update(gameTime);
+
+        _ball.ProcessCollision(_paddleLeft.BoundingBox);
+        _ball.ProcessCollision(_paddleRight.BoundingBox);
 
         base.Update(gameTime);
     }

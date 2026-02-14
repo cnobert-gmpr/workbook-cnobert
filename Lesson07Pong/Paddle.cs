@@ -12,6 +12,15 @@ public class Paddle
     private Vector2 _position, _direction, _dimensions;
     private float _speed;
 
+    // a "derived property", meaning that we "create" (derive) it from other data members
+    internal Rectangle BoundingBox
+    {
+        get
+        {
+            return new Rectangle(_position.ToPoint(), _dimensions.ToPoint());
+        }
+    }
+
     internal Vector2 Direction
     {
         set
