@@ -57,7 +57,7 @@ public class MosquitoAttackGame : Game
 
     protected override void Update(GameTime gameTime)
     {
-
+        _cannon.Update(gameTime);
         base.Update(gameTime);
     }
 

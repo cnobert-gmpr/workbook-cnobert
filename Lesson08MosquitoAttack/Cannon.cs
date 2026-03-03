@@ -22,6 +22,11 @@ public class Cannon
         _animation = new SimpleAnimation(texture, _dimensions.X, _dimensions.Y, 4, 2f);
     }
 
+    internal void Update(GameTime gameTime)
+    {
+        _animation.Update(gameTime);
+    }
+    
     internal void Draw(SpriteBatch spriteBatch)
     {
         if(_animation != null)
