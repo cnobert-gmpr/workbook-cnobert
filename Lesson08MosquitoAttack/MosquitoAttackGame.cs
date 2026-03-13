@@ -45,7 +45,7 @@ public class MosquitoAttackGame : Game
         _graphics.ApplyChanges();
 
         _cannon = new Cannon();
-        _cannon.Initialize(new Vector2(50, 325), 150);
+        _cannon.Initialize(new Vector2(50, 325), 150, BoundingBox);
 
         _mosquitoes = new Mosquito[_NumMosquitoes];
         for(int c = 0; c < _NumMosquitoes; c++)
@@ -110,6 +110,10 @@ public class MosquitoAttackGame : Game
                 {
                     _gameState = GameState.Paused;
                     _message = "Game Paused, press P to start playing.";
+                }
+                if(Pressed(Keys.Space))
+                {
+                    _cannon.Shoot();
                 }
 
                 break;
