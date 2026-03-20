@@ -18,7 +18,6 @@ public class CannonBall
     {
         get => new Rectangle((int)_position.X, (int)_position.Y, _texture.Width, _texture.Height);
     }
-
     internal bool Launchable { get => _state == State.NotFlying; }
 
     internal void Initialize(float speed, Rectangle gameBoundingBox)
@@ -68,5 +67,15 @@ public class CannonBall
             _direction = direction;
             _state = State.Flying;
         }
+    }
+    internal bool ProcessCollision(Rectangle boundingBox)
+    {
+        bool returnValue = false;
+        if(BoundingBox.Intersects(boundingBox))
+        {
+            _state = State.NotFlying;
+            returnValue = true;
+        }
+        return returnValue;
     }
 }

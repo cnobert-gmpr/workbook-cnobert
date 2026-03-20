@@ -100,10 +100,15 @@ public class MosquitoAttackGame : Game
                     _cannon.Direction  = new Vector2(1, 0);
                 else
                     _cannon.Direction  = Vector2.Zero;
+                
                 _cannon.Update(gameTime);
                 foreach(Mosquito mosquito in _mosquitoes)
                 {
                     mosquito.Update(gameTime);
+                    if(mosquito.Alive && _cannon.ProcessCollision(mosquito.BoundingBox))
+                    {
+                        mosquito.Die();
+                    }
                 }
 
                 if(Pressed(Keys.P))
