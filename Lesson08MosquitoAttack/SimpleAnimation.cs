@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace Lesson08MosquitoAttack;
 
-public class SimpleAnimation
+internal class SimpleAnimation
 {
     private readonly Texture2D _texture;
     private readonly List<Rectangle> _frames;
@@ -14,18 +14,40 @@ public class SimpleAnimation
     private float _timer;
     private int _frameIndex;
 
-    public bool Looping { get; set; } = true;
-    public bool Paused { get; set; } = false;
+    internal bool Looping { get; set; } = true;
+    internal bool Paused { get; set; } = false;
 
     // Play animation backwards
-    public bool Reverse { get; set; } = false;
+    internal bool Reverse { get; set; } = false;
+
+    internal bool DonePlayingOnce
+    {
+        get
+        {
+            bool finished = false;
+
+            if (!Looping)
+            {
+                if (!Reverse)
+                {
+                    finished = _frameIndex == _frames.Count - 1;
+                }
+                else
+                {
+                    finished = _frameIndex == 0;
+                }
+            }
+
+            return finished;
+        }
+    }
 
     internal Vector2 FrameDimensions
     {
         get
         {
             Vector2 dimensions = Vector2.Zero;
-            if(_frames != null)
+            if (_frames != null)
             {
                 dimensions = _frames[0].Size.ToVector2();
             }
@@ -33,7 +55,7 @@ public class SimpleAnimation
         }
     }
 
-    public SimpleAnimation(Texture2D texture, int frameWidth, int frameHeight, int frameCount, float framesPerSecond)
+    internal SimpleAnimation(Texture2D texture, int frameWidth, int frameHeight, int frameCount, float framesPerSecond)
     {
         _texture = texture;
 
@@ -46,7 +68,7 @@ public class SimpleAnimation
         _timePerFrame = 1f / framesPerSecond;
     }
 
-    public void Update(GameTime gameTime)
+    internal void Update(GameTime gameTime)
     {
         bool shouldProcess = !Paused;
         if (shouldProcess)
@@ -94,7 +116,7 @@ public class SimpleAnimation
         // One exit point only
     }
 
-    public void Draw(SpriteBatch spriteBatch, Vector2 position, SpriteEffects effects)
+    internal void Draw(SpriteBatch spriteBatch, Vector2 position, SpriteEffects effects)
     {
         spriteBatch.Draw(
             _texture,

@@ -6,7 +6,7 @@ namespace Lesson08MosquitoAttack;
 
 public class Mosquito
 {
-    private SimpleAnimation _animation;
+    private SimpleAnimation _animationAlive, _animationDying;
 
     private Vector2 _position;
     private Vector2 _direction;
@@ -24,8 +24,8 @@ public class Mosquito
             return new Rectangle(
                 (int)_position.X,
                 (int)_position.Y,
-                (int)_animation.FrameDimensions.X,
-                (int)_animation.FrameDimensions.Y
+                (int)_animationAlive.FrameDimensions.X,
+                (int)_animationAlive.FrameDimensions.Y
             );
         }
     }
@@ -44,8 +44,13 @@ public class Mosquito
     {
         Texture2D texture = content.Load<Texture2D>("Mosquito");
 
-        _animation = new SimpleAnimation(texture, texture.Width / 11, texture.Height, 11, 8f);
-        _animation.Paused = false;
+        _animationAlive = 
+            new SimpleAnimation(texture, texture.Width / 11, texture.Height, 11, 8f);
+        _animationAlive.Paused = false;
+
+        texture = content.Load<Texture2D>("Poof");
+        _animationDying = 
+            new SimpleAnimation(texture, texture.Width / 8, texture.Height, 8, 4);
     }
     internal void Update(GameTime gameTime)
     {
@@ -59,9 +64,14 @@ public class Mosquito
                 {
                     _direction.X *= -1;
                 }
-                _animation.Update(gameTime);
+                _animationAlive.Update(gameTime);
                 break;
             case State.Dying:
+                _animationDying.Update(gameTime);
+                if(_animationDying.DonePlayingOnce)
+                {
+                    _state = State.Dead;
+                }
                 break;
             case State.Dead:
                 break;
@@ -72,9 +82,10 @@ public class Mosquito
         switch(_state)
         {
             case State.Alive:
-                _animation.Draw(spriteBatch, _position, SpriteEffects.None);
+                _animationAlive.Draw(spriteBatch, _position, SpriteEffects.None);
                 break;
             case State.Dying:
+                _animationDying.Draw(spriteBatch, _position, SpriteEffects.None);
                 break;
             case State.Dead:
                 break;
@@ -83,7 +94,8 @@ public class Mosquito
 
     internal void Die()
     {
-        _state = State.Dead;
+        _state = State.Dying;
+        _animationDying.Looping = false;
     }
 
 }
