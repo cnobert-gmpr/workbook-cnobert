@@ -23,8 +23,8 @@ public class MosquitoAttackGame : Game
 
     private KeyboardState _kbCurrentState, _kbPreviousState;
 
-    private enum GameState {Playing, Paused, Over}
-    private GameState _gameState = GameState.Playing;
+    private enum GameState {Menu, Level01, Paused, Over}
+    private GameState _gameState = GameState.Level01;
 
     private Rectangle BoundingBox
     {
@@ -93,7 +93,7 @@ public class MosquitoAttackGame : Game
         _kbCurrentState = Keyboard.GetState();
         switch(_gameState)
         {
-            case GameState.Playing:
+            case GameState.Level01:
                 if(_kbCurrentState.IsKeyDown(Keys.A))
                     _cannon.Direction = new Vector2(-1, 0);
                 else if(_kbCurrentState.IsKeyDown(Keys.D))
@@ -101,7 +101,11 @@ public class MosquitoAttackGame : Game
                 else
                     _cannon.Direction  = Vector2.Zero;
                 
+                // Ask the cannon if it needs to be reloaded. If so, put a message on the screen.
                 _cannon.Update(gameTime);
+                // ask cannon if it is still alive, if not, change state to "Over"
+                
+                //are there zero mosquitoes alive after this loop? If so, change state to "over"
                 foreach(Mosquito mosquito in _mosquitoes)
                 {
                     mosquito.Update(gameTime);
@@ -125,7 +129,7 @@ public class MosquitoAttackGame : Game
             case GameState.Paused:
                 if(Pressed(Keys.P))
                 {
-                    _gameState = GameState.Playing;
+                    _gameState = GameState.Level01;
                 }
                 break;
             case GameState.Over:
@@ -142,7 +146,7 @@ public class MosquitoAttackGame : Game
 
         switch(_gameState)
         {
-            case GameState.Playing:
+            case GameState.Level01:
                 _spriteBatch.Draw(_background, Vector2.Zero, Color.White);
                 _cannon.Draw(_spriteBatch);
                 foreach(Mosquito mosquito in _mosquitoes)
