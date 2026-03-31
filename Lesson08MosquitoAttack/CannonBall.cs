@@ -5,42 +5,35 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Lesson08MosquitoAttack;
 
-public class CannonBall
+public class CannonBall : Projectile
 {
-    private Vector2 _position, _direction;
-    private float _speed;
-    private Texture2D _texture;
-    private Rectangle _gameBoundingBox;
 
+    private Texture2D _texture;
     private List<Vector2> _trailPositions;
     private float _trailTimer;
     private const float _TrailSpawnInterval = 0.15f;
     private const int _MaxTrailPositions = 12;
 
-    private enum State { Flying, NotFlying }
-    private State _state = State.NotFlying;
-
     internal Rectangle BoundingBox
     {
         get => new Rectangle((int)_position.X, (int)_position.Y, _texture.Width, _texture.Height);
     }
-    internal bool Launchable { get => _state == State.NotFlying; }
 
-    internal void Initialize(float speed, Rectangle gameBoundingBox)
+    //"override" means "I'm hiding the parent method"
+    internal override void Initialize(float speed, Rectangle gameBoundingBox)
     {
-        _position = new Vector2(50, 300);
-        _direction = new Vector2(0, -1);
-        _speed = speed;
-        _gameBoundingBox = gameBoundingBox;
+        // run the parent class' Initialize method
+        base.Initialize(speed, gameBoundingBox);
 
+        // run the CannonBall-specific code
         _trailPositions = new List<Vector2>();
         _trailTimer = 0;
     }
-    internal void LoadContent(ContentManager content)
+    internal override void LoadContent(ContentManager content)
     {
         _texture = content.Load<Texture2D>("CannonBall");
     }
-    internal void Update(GameTime gameTime)
+    internal override void Update(GameTime gameTime)
     {
         float dt = (float)gameTime.ElapsedGameTime.TotalSeconds;
         switch(_state)
@@ -50,6 +43,7 @@ public class CannonBall
                 if(!BoundingBox.Intersects(_gameBoundingBox))
                 {
                     _state = State.NotFlying;
+                    _trailPositions.Clear();
                 }
 
                 _trailTimer += dt;
@@ -67,7 +61,7 @@ public class CannonBall
                 break;
         }
     }
-    internal void Draw(SpriteBatch spriteBatch)
+    internal override void Draw(SpriteBatch spriteBatch)
     {
         switch(_state)
         {
@@ -79,6 +73,7 @@ public class CannonBall
                 break;
         }
     }
+    
     internal void DrawTrail(SpriteBatch spriteBatch)
     {
         for(int c = 0; c < _trailPositions.Count; c++)
@@ -101,21 +96,14 @@ public class CannonBall
             );
         }
     }
-    internal void Launch(Vector2 position, Vector2 direction)
-    {
-        if(_state == State.NotFlying)
-        {
-            _position = position;
-            _direction = direction;
-            _state = State.Flying;
-        }
-    }
+    
     internal bool ProcessCollision(Rectangle boundingBox)
     {
         bool returnValue = false;
         if(BoundingBox.Intersects(boundingBox))
         {
             _state = State.NotFlying;
+            _trailPositions.Clear();
             returnValue = true;
         }
         return returnValue;
