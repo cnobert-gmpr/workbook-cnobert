@@ -4,15 +4,11 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Lesson08MosquitoAttack;
 
-public class Cannon
+public class Cannon : Actor
 {
     private const int _NumProjectiles = 5;
 
-    private SimpleAnimation _animation;
-    private Vector2 _position, _direction;
     private Point _dimensions;
-    private float _speed;
-    private Rectangle _gameBoundingBox;
 
     private Projectile[] _projectiles;
 
@@ -22,20 +18,7 @@ public class Cannon
         {
             value.Y = 0;
             _direction = value; 
-            _animation.Reverse = _direction.X < 0;
-        }
-    }
-
-    internal Rectangle BoundingBox
-    {
-        get
-        {
-            return new Rectangle(
-                (int)_position.X,
-                (int)_position.Y,
-                (int)_animation.FrameDimensions.X,
-                (int)_animation.FrameDimensions.Y
-            );
+            _animationAlive.Reverse = _direction.X < 0;
         }
     }
     
@@ -63,7 +46,7 @@ public class Cannon
     {
         Texture2D texture = content.Load<Texture2D>("Cannon");
         _dimensions = new Point(texture.Width / 4, texture.Height);
-        _animation = new SimpleAnimation(texture, _dimensions.X, _dimensions.Y, 4, 2f);
+        _animationAlive = new SimpleAnimation(texture, _dimensions.X, _dimensions.Y, 4, 2f);
         foreach(Projectile p in _projectiles)
             p.LoadContent(content);
     }
@@ -73,15 +56,15 @@ public class Cannon
         _position += _speed * _direction * dt;
 
         if(_direction != Vector2.Zero)
-            _animation.Update(gameTime);
+            _animationAlive.Update(gameTime);
 
         foreach(Projectile p in _projectiles)
             p.Update(gameTime);
     }
     internal void Draw(SpriteBatch spriteBatch)
     {
-        if(_animation != null)
-            _animation.Draw(spriteBatch, _position, SpriteEffects.None);
+        if(_animationAlive != null)
+            _animationAlive.Draw(spriteBatch, _position, SpriteEffects.None);
         foreach(Projectile p in _projectiles)
             p.Draw(spriteBatch);
     }

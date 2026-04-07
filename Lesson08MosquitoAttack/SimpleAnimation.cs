@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace Lesson08MosquitoAttack;
 
-internal class SimpleAnimation
+public class SimpleAnimation
 {
     private readonly Texture2D _texture;
     private readonly List<Rectangle> _frames;
