@@ -6,7 +6,7 @@ namespace Lesson08MosquitoAttack;
 
 public class Cannon
 {
-    private const int _NumCannonBalls = 10;
+    private const int _NumProjectiles = 5;
 
     private SimpleAnimation _animation;
     private Vector2 _position, _direction;
@@ -14,7 +14,7 @@ public class Cannon
     private float _speed;
     private Rectangle _gameBoundingBox;
 
-    private CannonBall[] _cannonBalls;
+    private Projectile[] _projectiles;
 
     internal Vector2 Direction 
     { 
@@ -38,17 +38,24 @@ public class Cannon
             );
         }
     }
+    
     internal void Initialize(Vector2 position, float speed, Rectangle gameBoundingBox)
     {
         _position = position;
         _speed = speed;
         _gameBoundingBox = gameBoundingBox;
 
-        _cannonBalls = new CannonBall[_NumCannonBalls];
-        for(int c = 0; c < _NumCannonBalls; c++)
+        _projectiles = new Projectile[_NumProjectiles];
+
+        _projectiles[0] = new CannonBall();
+        _projectiles[1] = new FireBall();
+        _projectiles[2] = new FireBall();
+        _projectiles[3] = new CannonBall();
+        _projectiles[4] = new CannonBall();
+
+        for(int c = 0; c < _NumProjectiles; c++)
         {
-            _cannonBalls[c] = new CannonBall();
-            _cannonBalls[c].Initialize(50, _gameBoundingBox);
+            _projectiles[c].Initialize(50, _gameBoundingBox);
         } 
     }
 
@@ -57,8 +64,8 @@ public class Cannon
         Texture2D texture = content.Load<Texture2D>("Cannon");
         _dimensions = new Point(texture.Width / 4, texture.Height);
         _animation = new SimpleAnimation(texture, _dimensions.X, _dimensions.Y, 4, 2f);
-        foreach(CannonBall c in _cannonBalls)
-            c.LoadContent(content);
+        foreach(Projectile p in _projectiles)
+            p.LoadContent(content);
     }
     internal void Update(GameTime gameTime)
     {
@@ -68,27 +75,26 @@ public class Cannon
         if(_direction != Vector2.Zero)
             _animation.Update(gameTime);
 
-        foreach(CannonBall c in _cannonBalls)
-            c.Update(gameTime);
+        foreach(Projectile p in _projectiles)
+            p.Update(gameTime);
     }
-    
     internal void Draw(SpriteBatch spriteBatch)
     {
         if(_animation != null)
             _animation.Draw(spriteBatch, _position, SpriteEffects.None);
-        foreach(CannonBall c in _cannonBalls)
-            c.Draw(spriteBatch);
+        foreach(Projectile p in _projectiles)
+            p.Draw(spriteBatch);
     }
 
     internal void Shoot()
     {
-        foreach(CannonBall c in _cannonBalls)
+        foreach(Projectile p in _projectiles)
         {
-            if(c.Launchable)
+            if(p.Launchable)
             {
-                float cannonBallPositionY = BoundingBox.Top - c.BoundingBox.Height;
-                float cannonBallPositionX = BoundingBox.Center.X - c.BoundingBox.Width / 2;
-                c.Launch(new Vector2(cannonBallPositionX, cannonBallPositionY), new Vector2(0, -1));
+                float cannonBallPositionY = BoundingBox.Top - p.BoundingBox.Height;
+                float cannonBallPositionX = BoundingBox.Center.X - p.BoundingBox.Width / 2;
+                p.Launch(new Vector2(cannonBallPositionX, cannonBallPositionY), new Vector2(0, -1));
                 //we have found one to launch, time to abort
                 return; // or "break;"
             }
@@ -97,9 +103,9 @@ public class Cannon
 
     internal bool ProcessCollision(Rectangle boundingBox)
     {
-        foreach(CannonBall c in _cannonBalls)
+        foreach(Projectile p in _projectiles)
         {
-            if(c.ProcessCollision(boundingBox))
+            if(p.ProcessCollision(boundingBox))
                 return true;
         }
         return false;

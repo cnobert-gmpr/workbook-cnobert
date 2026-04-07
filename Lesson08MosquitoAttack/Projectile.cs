@@ -7,14 +7,22 @@ namespace Lesson08MosquitoAttack;
 // if a class has one or more abstract methods, it must be declared as abstract
 public abstract class Projectile
 {
+    protected Texture2D _texture;
+    
     // the "private" access modifier also hides from children
     // so, whatever we want the children to see, we will designate as "protected"
     protected Vector2 _position, _direction;
+    protected Point _dimensions;
     protected float _speed;
     protected Rectangle _gameBoundingBox;
 
     protected enum State { Flying, NotFlying }
     protected State _state = State.NotFlying;
+
+    internal Rectangle BoundingBox
+    {
+        get => new Rectangle((int)_position.X, (int)_position.Y, _dimensions.X, _dimensions.Y);
+    }
 
     internal bool Launchable { get => _state == State.NotFlying; }
 
@@ -41,5 +49,16 @@ public abstract class Projectile
             _direction = direction;
             _state = State.Flying;
         }
+    }
+
+    internal virtual bool ProcessCollision(Rectangle boundingBox)
+    {
+        bool returnValue = false;
+        if(_state == State.Flying && BoundingBox.Intersects(boundingBox))
+        {
+            _state = State.NotFlying;
+            returnValue = true;
+        }
+        return returnValue;
     }
 }

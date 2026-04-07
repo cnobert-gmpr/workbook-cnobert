@@ -109,6 +109,10 @@ public class MosquitoAttackGame : Game
                 foreach(Mosquito mosquito in _mosquitoes)
                 {
                     mosquito.Update(gameTime);
+                    // if(_cannon.Alive && mosquito.ProcessCollision(_cannon.BoundingBox))
+                    // {
+                    //     _cannon.Die();
+                    // }
                     if(mosquito.Alive && _cannon.ProcessCollision(mosquito.BoundingBox))
                     {
                         mosquito.Die();

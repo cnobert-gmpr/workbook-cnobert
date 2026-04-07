@@ -8,16 +8,10 @@ namespace Lesson08MosquitoAttack;
 public class CannonBall : Projectile
 {
 
-    private Texture2D _texture;
     private List<Vector2> _trailPositions;
     private float _trailTimer;
     private const float _TrailSpawnInterval = 0.15f;
     private const int _MaxTrailPositions = 12;
-
-    internal Rectangle BoundingBox
-    {
-        get => new Rectangle((int)_position.X, (int)_position.Y, _texture.Width, _texture.Height);
-    }
 
     //"override" means "I'm hiding the parent method"
     internal override void Initialize(float speed, Rectangle gameBoundingBox)
@@ -26,6 +20,7 @@ public class CannonBall : Projectile
         base.Initialize(speed, gameBoundingBox);
 
         // run the CannonBall-specific code
+        _dimensions = new Point(4, 4);
         _trailPositions = new List<Vector2>();
         _trailTimer = 0;
     }
@@ -97,15 +92,11 @@ public class CannonBall : Projectile
         }
     }
     
-    internal bool ProcessCollision(Rectangle boundingBox)
+    internal override bool ProcessCollision(Rectangle boundingBox)
     {
-        bool returnValue = false;
-        if(BoundingBox.Intersects(boundingBox))
-        {
-            _state = State.NotFlying;
+        bool returnValue = base.ProcessCollision(boundingBox);
+        if(returnValue)
             _trailPositions.Clear();
-            returnValue = true;
-        }
         return returnValue;
     }
 }
