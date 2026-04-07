@@ -92,9 +92,9 @@ public class Cannon
         {
             if(p.Launchable)
             {
-                float cannonBallPositionY = BoundingBox.Top - p.BoundingBox.Height;
-                float cannonBallPositionX = BoundingBox.Center.X - p.BoundingBox.Width / 2;
-                p.Launch(new Vector2(cannonBallPositionX, cannonBallPositionY), new Vector2(0, -1));
+                float projectilePositionY = BoundingBox.Top - p.BoundingBox.Height;
+                float projectilesPositionX = BoundingBox.Center.X - p.BoundingBox.Width / 2;
+                p.Launch(new Vector2(projectilesPositionX, projectilePositionY), new Vector2(0, -1));
                 //we have found one to launch, time to abort
                 return; // or "break;"
             }
